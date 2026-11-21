@@ -1,5 +1,5 @@
-// SSDT-P-CST-ALIAS-3S.dsl
-DefinitionBlock ("", "SSDT", 2, "HACK", "P_CST3", 0x00000001)
+// Publish C1 and C2 for the stock BC-250 processor objects.
+DefinitionBlock ("", "SSDT", 2, "HACK", "P_CST3", 0x00000002)
 {
     // Firmware objects we’re augmenting
     External (\_PR, DeviceObj)
@@ -16,12 +16,12 @@ DefinitionBlock ("", "SSDT", 2, "HACK", "P_CST3", 0x00000001)
     External (\_PR.P00A, ProcessorObj)
     External (\_PR.P00B, ProcessorObj)
 
-    // 3-state C-state package mirroring your Zen2 laptop values
+    // C3 is omitted because it has been reported to cause idle freezes.
     Method (PCST, 0, NotSerialized)
     {
         Return (Package ()
         {
-            0x03,   // number of C-states
+            0x02,   // number of C-states
 
             // C1: FFixedHW, BitWidth=0x02, BitOffset=0x02, Lat=0x0001, Power=0
             Package ()
@@ -54,23 +54,6 @@ DefinitionBlock ("", "SSDT", 2, "HACK", "P_CST3", 0x00000001)
                 },
                 0x02,           // C2 type
                 0x015E,         // Latency (us)
-                0x00000000      // Power (mW)
-            },
-
-            // C3: SystemIO @0x415, AccessSize=1, Lat=0x0190, Power=0
-            Package ()
-            {
-                ResourceTemplate ()
-                {
-                    Register (SystemIO,
-                        0x08,                   // Bit Width
-                        0x00,                   // Bit Offset
-                        0x0000000000000415,     // Address
-                        0x01                    // Access Size
-                    )
-                },
-                0x03,           // C3 type
-                0x0190,         // Latency (us)
                 0x00000000      // Power (mW)
             }
         })
